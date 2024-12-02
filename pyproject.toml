@@ -1,0 +1,41 @@
+[build-system]
+requires = [
+    "setuptools>=70",
+    "setuptools-scm>=8.0",
+    "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "notabot"
+dynamic = ["version"]
+description = "Automated codesigning and notarization of a macOS app."
+readme = {file = "README.rst", content-type = "text/x-rst"}
+authors = [
+    { name="Marc Culler", email="culler@users.noreply.github.com" },
+    { name="Nathan M. Dunfield", email="nathan@dunfield.info" },
+    { name="Matthias Görner", email="enischte@gmail.com" },
+]
+maintainers = [
+    { name="Marc Culler", email="culler@users.noreply.github.com" },
+    { name="Nathan M. Dunfield", email="nathan@dunfield.info" },
+    { name="Matthias Görner", email="enischte@gmail.com" },
+]
+requires-python = ">=3.8"
+keywords = ["app", "codesign", "notarize"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)",
+    "Operating System :: macOS",
+    "Programming Language :: Python",
+    "Topic :: Software Development"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/3-manifolds/notabot"
+"Bug Tracker" = "https://github.com/3-manifolds/notabot/issues"
+
+[tool.setuptools.dynamic]
+version = {attr = "notabot.__version__"}
+
+[tool.setuptools_scm]  # Includes in package all git-tracked files in src/

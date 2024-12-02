@@ -97,10 +97,16 @@ class Notarizer:
             
     def sign_app(self):
         self.visit_files()
+        MacOS = []
         for binary in self.binaries:
-            self.sign_item(binary)
+            if binary.find('MacOS'):
+                MacOS.append(binary)
+            else:
+                self.sign_item(binary)
         for framework in self.frameworks:
             self.sign_item(framework)
+        for binary in MacOS:
+            self.sign_item(binary)
         self.sign_item(self.config['app']['app_path'])
 
     def build_dmg(self):

@@ -18,7 +18,7 @@ dmg_path = <path to the disk image that your build_dmg method will create>
 [entitlements]
 plist_file = <path to entitlement plist file>
 """
-__version__ = '1.3.0'
+__version__ = '1.3.1'
 
 import os
 import sys

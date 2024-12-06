@@ -18,5 +18,3 @@ else:
             notarizer.sign_bundle(arg)
         else:
             notarizer.sign_item(arg)
-        
->>>>>>> af316384a8a63f4c9dd3ebf8b5308dde8348eb0c

@@ -24,7 +24,7 @@ bundle_path = <path to a framework or application bundle>
 dmg_path = <path to the disk image that your build_dmg method will create>
 """
 
-__version__ = '2.1'
+__version__ = '2.0.1'
 
 import os
 import sys

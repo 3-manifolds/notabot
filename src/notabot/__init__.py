@@ -19,13 +19,11 @@ identity = <the signing identity you used to sign your app>
 [entitlements]
 plist_file = <path to entitlement plist file>
 
-[entitlements]
-plist_file = <path to entitlement plist file>
-
 [paths]
 bundle_path = <path to a framework or application bundle>
 dmg_path = <path to the disk image that your build_dmg method will create>
 """
+
 __version__ = '2.1'
 
 import os

@@ -26,7 +26,7 @@ plist_file = <path to entitlement plist file>
 bundle_path = <path to a framework or application bundle>
 dmg_path = <path to the disk image that your build_dmg method will create>
 """
-__version__ = '1.3.3'
+__version__ = '2.1'
 
 import os
 import sys
@@ -35,12 +35,8 @@ import json
 import time
 import configparser
 
-if sys.byteorder == 'little':
-    fat_magic = b'\xca\xfe\xba\xbe'
-    mach_magic64 = b'\xfe\xed\xfa\xcf'
-else:
-    fat_magic = b'\xbe\xba\xfe\xca'
-    mach_magic64 = b'\xcf\xfa\xed\xfe'
+mach_magics = (b'\xca\xfe\xba\xbe', b'\xfe\xed\xfa\xce', b'\xfe\xed\xfa\xcf',
+               b'\xbe\xba\xfe\xca', b'\xce\xfa\xed\xfe', b'\xcf\xfa\xed\xfe')
 
 class Notarizer:
     """
@@ -63,7 +59,7 @@ class Notarizer:
     def is_mach_binary(self, pathname):
         with open(pathname, 'rb') as file_obj:
             magic = file_obj.read(4)
-            if magic == fat_magic or magic == mach_magic64:
+            if magic in mach_magics:
                 return True
         return False
 
@@ -88,9 +84,16 @@ class Notarizer:
         binaries = []
         frameworks = []
         apps = []
-        # Subdirectories with a dot in the name are expected to contain code.
-        code_dirnames = []
+        code_directories = []
         for dirpath, dirnames, filenames in os.walk(bundle_path):
+            _, ext = os.path.splitext(dirpath)
+            if ext == '.framework':
+                frameworks.append(dirpath)
+            elif ext == '.app':
+                apps.append(dirpath)
+            elif ext and dirpath.find('Versions') < 0:
+                # Directories with extensions are assumed to contain code.
+                code_directories.append(dirpath)
             for filename in filenames:
                 pathname = os.path.join(dirpath, filename)
                 if os.path.islink(pathname):
@@ -102,19 +105,9 @@ class Notarizer:
                         raise ValueError(
                             'Symlink %s is broken.' % pathname)
                 elif self.is_mach_binary(pathname):
-                        binaries.append(pathname)
-            for dirname in dirnames:
-                pathname = os.path.join(dirpath, dirname)
-                base, ext = os.path.splitext(pathname)
-                if ext == '.framework':
-                    frameworks.append(pathname)
-                elif ext == '.app':
-                    apps.append(pathname)
-                elif ext and pathname.find('Versions') < 0:
-                    # Directories with extensions are assumed to contain code.
-                    code_dirnames.append(pathname)
-        if code_dirnames:
-            print('Code directories:', code_dirnames)
+                    binaries.append(pathname)
+        if code_directories:
+            print('Code directories:', code_directories)
         return binaries, frameworks, apps
 
     def sign_item(self, item_path):
@@ -133,7 +126,6 @@ class Notarizer:
             self.sign_item(framework)
         for app in apps:
             self.sign_item(app)
-        self.sign_item(bundle_path)
 
     def build_dmg(self):
         #Subclasses must override this method in order for the run method to work.
@@ -209,7 +201,7 @@ class Notarizer:
 
     def run(self):
         """Do the full notarization dance."""
-        self.sign_app()
+        self.sign_bundle()
         self.build_dmg()
         print('Notarizing app ...')
         self.notarize()

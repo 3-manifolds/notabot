@@ -14,7 +14,6 @@ else:
     for arg in sys.argv[1:]:
         _, ext = os.path.splitext(arg)
         if ext in ('.app', '.framework'):
-            print('signing bundle', arg)
             notarizer.sign_bundle(arg)
         else:
             notarizer.sign_item(arg)

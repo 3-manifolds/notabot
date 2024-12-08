@@ -24,7 +24,7 @@ bundle_path = <path to a framework or application bundle>
 dmg_path = <path to the disk image that your build_dmg method will create>
 """
 
-__version__ = '2.0.1'
+__version__ = '2.0.2'
 
 import os
 import sys
@@ -132,7 +132,7 @@ class Notarizer:
     def notarize(self):
         info = {}
         config = self.config
-        dmg_path = config['app']['dmg_path']
+        dmg_path = config['paths']['dmg_path']
         if not os.path.exists(dmg_path):
             raise ValueError("No disk image was specified.");
         args = ['xcrun', 'notarytool', 'submit', dmg_path,
@@ -192,7 +192,7 @@ class Notarizer:
     def staple_dmg(self):
         # Requires that the paths section exist.
         config = self.config
-        print('Stapling the notarization ticket to %s\n'%config['app']['dmg_path'])
+        print('Stapling the notarization ticket to %s\n'%config['paths']['dmg_path'])
         args = ['xcrun', 'stapler', 'staple', config['paths']['dmg_path']]
         result = subprocess.run(args, text=True, capture_output=True)
         self.check(result, 'Stapling failed')

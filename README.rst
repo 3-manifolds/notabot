@@ -25,11 +25,12 @@ directory and should have the following structure:
   password = <your app-specific password>
   identity = <the signing identity you used to sign your app>
 
+  [entitlements]
+  plist_file = <path to entitlement plist file>
+
   [app]
-  app_name = <name of the app>
   app_path = <path to the application bundle>
   dmg_path = <path to the disk image that your build_dmg method will create>
-  bundle_id = <an (arbitrary) bundle identifier that you provide for the request>
 
 This package is available from pypi:
 
